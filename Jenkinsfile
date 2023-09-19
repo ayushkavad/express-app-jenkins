@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    environment{
+    environment {
         DOCKERHUB_CREDS = credentials('dockerhub')
     }
     stages {
@@ -12,23 +12,31 @@ pipeline {
         }
         stage('Build Image') {
             steps {
-		        sh 'docker build -t ayushkavad/jenkinstest:$BUILD_NUMBER ./'
+                script {
+                    sh "docker build -t ayushkavad/jenkinstest:$BUILD_NUMBER ./"
+                }
             }
         }
         stage('Docker Login') {
             steps {
-                sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'                
+                script {
+                    def DOCKERHUB_CREDS_USR = credentials('dockerhub').username
+                    def DOCKERHUB_CREDS_PSW = credentials('dockerhub').password
+                    sh "echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin"
+                }
             }
         }
         stage('Docker Push') {
             steps {
-                sh 'docker push ayushkavad/jenkinstest:$BUILD_NUMBER'
+                script {
+                    sh "docker push ayushkavad/jenkinstest:$BUILD_NUMBER"
+                }
             }
         }
     }
     post {
-		always {
-			sh 'docker logout'
-		}
-	 }
+        always {
+            sh 'docker logout'
+        }
     }
+}
