@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Build Image') {
             steps {
-		        sh 'docker build -t raj80dockerid/jenkinstest:$BUILD_NUMBER ./pushdockerimage/'
+		        sh 'docker build -t ayushkavad/jenkinstest:$BUILD_NUMBER ./'
             }
         }
         stage('Docker Login') {
@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Docker Push') {
             steps {
-                sh 'docker push raj80dockerid/jenkinstest:$BUILD_NUMBER'
+                sh 'docker push ayushkavad/jenkinstest:$BUILD_NUMBER'
             }
         }
     }
