@@ -1,41 +1,34 @@
 pipeline {
     agent any
-
-    environment {
-        DOCKERHUB_CREDS = creadentials('dockerhub')
+    environment{
+        DOCKERHUB_CREDS = credentials('dockerhub')
     }
-
     stages {
-        stage('Clone repo'){
+        stage('Clone Repo') {
             steps {
                 checkout scm
                 sh 'ls *'
             }
         }
-
-        stage('Build image'){
+        stage('Build Image') {
             steps {
-                sh 'docker build -t ayushkavad/express-app:$BUILD_NUMBER ./'
+		        sh 'docker build -t raj80dockerid/jenkinstest:$BUILD_NUMBER ./pushdockerimage/'
             }
         }
-
-        stage('Docker login'){
+        stage('Docker Login') {
             steps {
-                sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin' 
+                sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'                
             }
         }
-
-
-        stage('Push image'){
+        stage('Docker Push') {
             steps {
-                sh 'docker push ayushkavad/express-app:$BUILD_NUMBER' 
+                sh 'docker push raj80dockerid/jenkinstest:$BUILD_NUMBER'
             }
         }
     }
-
     post {
-        always {
-            sh 'docker logout'
-        }
+		always {
+			sh 'docker logout'
+		}
+	 }
     }
-}
